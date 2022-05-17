@@ -1,0 +1,63 @@
+diff --git a/internal/ffi/BUILD.bazel b/internal/ffi/BUILD.bazel
+index b62e49e..e12fffd 100644
+--- a/internal/ffi/BUILD.bazel
++++ b/internal/ffi/BUILD.bazel
+@@ -2,7 +2,13 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
+ 
+ go_library(
+     name = "ffi",
+-    srcs = ["ffi.go"],
++    srcs = [
++        "ffi.go",
++        "//internal/ffi/native:polar.h", # keep
++    ],
++    cdeps = [
++        "//internal/ffi/native/linux:libpolar", # keep
++    ],
+     cgo = True,
+     clinkopts = select({
+         "@io_bazel_rules_go//go/platform:android_amd64": [
+@@ -21,7 +27,7 @@ go_library(
+             "internal/ffi/native/macos/arm64/libpolar.a -ldl -lm",
+         ],
+         "@io_bazel_rules_go//go/platform:linux_amd64": [
+-            "internal/ffi/native/linux/libpolar.a -ldl -lm",
++            "external/com_github_osohq_go_oso/internal/ffi/native/linux/libpolar.a -ldl -lm",
+         ],
+         "@io_bazel_rules_go//go/platform:windows_amd64": [
+             "internal/ffi/native/windows/libpolar.a -lm -lws2_32 -luserenv -lbcrypt",
+diff --git a/internal/ffi/native/BUILD.bazel b/internal/ffi/native/BUILD.bazel
+index 612f8a6..4c05819 100644
+--- a/internal/ffi/native/BUILD.bazel
++++ b/internal/ffi/native/BUILD.bazel
+@@ -14,3 +14,7 @@ go_library(
+         "//internal/ffi/native/windows",
+     ],
+ )
++
++exports_files([
++    "polar.h",
++])
+diff --git a/internal/ffi/native/linux/BUILD.bazel b/internal/ffi/native/linux/BUILD.bazel
+index 39fce09..4b7a883 100644
+--- a/internal/ffi/native/linux/BUILD.bazel
++++ b/internal/ffi/native/linux/BUILD.bazel
+@@ -1,4 +1,5 @@
+ load("@io_bazel_rules_go//go:def.bzl", "go_library")
++load("@rules_cc//cc:defs.bzl", "cc_import")
+ 
+ go_library(
+     name = "linux",
+@@ -6,3 +7,12 @@ go_library(
+     importpath = "github.com/osohq/go-oso/internal/ffi/native/linux",
+     visibility = ["//:__subpackages__"],
+ )
++
++cc_import(
++    name = "libpolar",
++    static_library = "libpolar.a",
++    hdrs = [
++        "//internal/ffi/native:polar.h",
++    ],
++    visibility = ["//visibility:public"],
++)

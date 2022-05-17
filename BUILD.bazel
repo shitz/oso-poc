@@ -7,6 +7,7 @@ gazelle(name = "gazelle")
 go_test(
     name = "lib_test",
     srcs = ["main_test.go"],
+    data = ["policy.polar"],
     deps = [
         "@com_github_osohq_go_oso//:go-oso",
         "@com_github_stretchr_testify//assert:go_default_library",

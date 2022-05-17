@@ -7,6 +7,8 @@ Rust and the Go bindings rely on `cgo` to interface with the main framework.
 
 ## Problem
 
+**Update**: I made it work by using the support for patches in `go_repository`.
+
 First of all, we establish that the Go test runs fine using `go test`:
 
 ```bash

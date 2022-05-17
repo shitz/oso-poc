@@ -1,0 +1,25 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/shitz/oso-poc
+gazelle(name = "gazelle")
+
+go_test(
+    name = "lib_test",
+    srcs = ["main_test.go"],
+    deps = [
+        "@com_github_osohq_go_oso//:go-oso",
+        "@com_github_stretchr_testify//assert:go_default_library",
+        "@com_github_stretchr_testify//require:go_default_library",
+    ],
+)
+
+go_test(
+    name = "oso-poc_test",
+    srcs = ["main_test.go"],
+    deps = [
+        "@com_github_osohq_go_oso//:go-oso",
+        "@com_github_stretchr_testify//assert:go_default_library",
+        "@com_github_stretchr_testify//require:go_default_library",
+    ],
+)
